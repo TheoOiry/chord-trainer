@@ -180,7 +180,7 @@ export default function App() {
         <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
           <div className="w-full bg-white rounded-2xl shadow p-4 overflow-hidden">
             <p className="text-sm text-gray-600 mb-2">Preview keyboard</p>
-            <Piano pressedNotes={pressedNotes} compact />
+            <Piano pressedNotes={pressedNotes} />
           </div>
         </div>
       </div>
