@@ -1,13 +1,8 @@
-import React from "react";
-import type { Note } from "./utils/notes";
-
-interface PianoProps {
-  pressedNotes: Note[];
-  startOctave?: number;
-  octaves?: number;
-}
+import React, { useEffect, useMemo, useState } from "react";
+import { useMidi } from "./hooks/useMidi";
 
 const WHITE_KEYS = ["C", "D", "E", "F", "G", "A", "B"] as const;
+const START_OCTAVE = 3;
 
 const BLACK_KEYS: Record<(typeof WHITE_KEYS)[number], string | null> = {
   C: "C#",
@@ -19,12 +14,32 @@ const BLACK_KEYS: Record<(typeof WHITE_KEYS)[number], string | null> = {
   B: null,
 };
 
-export const Piano: React.FC<PianoProps> = ({
-  pressedNotes,
-  startOctave = 3,
-  octaves = 3,
-}) => {
-  const pressedSet = new Set(pressedNotes.map((note) => `${note.name}${note.octave}`));
+export const Piano: React.FC = () => {
+  const { pressedNotes } = useMidi();
+
+  const pressedSet = useMemo(
+    () => new Set(pressedNotes.map((note) => `${note.name}${note.octave}`)),
+    [pressedNotes],
+  );
+
+  const [computedOctaves, setComputedOctaves] = useState<number>(3);
+
+  useEffect(() => {
+    const calc = () => {
+      const w = window.innerWidth;
+      if (w < 480) setComputedOctaves(1);
+      else if (w < 768) setComputedOctaves(2);
+      else if (w < 1200) setComputedOctaves(3);
+      else setComputedOctaves(4);
+    };
+
+    calc();
+
+    window.addEventListener("resize", calc);
+    return () => window.removeEventListener("resize", calc);
+  }, []);
+
+  const keyWidthPercent = 100 / (7 * computedOctaves);
 
   const renderOctave = (octave: number) =>
     WHITE_KEYS.map((note) => {
@@ -36,34 +51,29 @@ export const Piano: React.FC<PianoProps> = ({
       const isBlackPressed = blackNote ? pressedSet.has(blackNote) : false;
 
       return (
-        <div key={whiteNote} className="relative">
+        <div
+          key={whiteNote}
+          className="relative flex-1 h-full"
+          style={{ width: `${keyWidthPercent}%` }}
+        >
           <div
-            className={[
-              "w-14 h-48 border border-black",
-              "flex items-end justify-center",
-              "bg-white transition-colors",
-              isWhitePressed ? "bg-yellow-300" : "",
-            ].join(" ")}
+            className="w-full h-full border border-gray-200 flex flex-col items-center justify-end pb-1 transition-colors text-[11px] font-medium text-gray-600"
+            style={{ backgroundColor: isWhitePressed ? "#fef08a" : "white" }}
           >
-            {/* <span className="mb-1 text-xs text-gray-700">
-              {whiteNote}
-            </span> */}
+            {note}{octave}
           </div>
 
           {black && (
             <div
-              className={[
-                "absolute top-0 -right-3",
-                "w-8 h-28 z-10",
-                "bg-black rounded-b",
-                "flex items-end justify-center",
-                "transition-colors",
-                isBlackPressed ? "bg-orange-500" : "",
-              ].join(" ")}
+              className="absolute top-0 z-10 rounded-b flex items-end justify-center pb-0.5 text-[8px] font-medium text-white"
+              style={{
+                width: "65%",
+                height: "70%",
+                left: "67.5%",
+                backgroundColor: isBlackPressed ? "#1f2937" : "black",
+              }}
             >
-              {/* <span className="mb-1 text-[10px] text-white">
-                {blackNote}
-              </span> */}
+              {black}{octave}
             </div>
           )}
         </div>
@@ -71,10 +81,10 @@ export const Piano: React.FC<PianoProps> = ({
     });
 
   return (
-    <div className="flex select-none">
-      {Array.from({ length: octaves }).map((_, i) => (
-        <div key={i} className="flex relative">
-          {renderOctave(startOctave + i)}
+    <div className="flex w-full h-full select-none bg-white">
+      {Array.from({ length: computedOctaves }).map((_, i) => (
+        <div key={i} className="flex w-full h-full relative">
+          {renderOctave(START_OCTAVE + i)}
         </div>
       ))}
     </div>
