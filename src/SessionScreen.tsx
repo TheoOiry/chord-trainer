@@ -34,7 +34,7 @@ export const SessionScreen: React.FC = () => {
                 : "bg-white text-gray-700 border border-gray-200"
             }`}
           >
-            {c.root} {c.type}
+            {c.root}{c.type}
           </div>
         ))}
       </div>

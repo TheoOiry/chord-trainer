@@ -71,6 +71,10 @@ export const ChordSequenceProvider: React.FC<{ children: ReactNode }> = ({
     const isCorrect =
       chord.root === currentChord.root && chord.type === currentChord.type;
 
+    if (!startTimeRef.current) {
+      startTimeRef.current = Date.now();
+    }
+
     if (!isCorrect) {
       setErrors((e) => e + 1);
       return;
@@ -90,7 +94,11 @@ export const ChordSequenceProvider: React.FC<{ children: ReactNode }> = ({
     replay();
   });
 
-  useEffect(() => subscribeChord(handleChord), [subscribeChord]);
+  useEffect(() => { 
+    const unsubscribe = subscribeChord(handleChord) 
+
+    return () => unsubscribe();
+  }, [subscribeChord]);
 
   return (
     <ChordSequenceContext.Provider

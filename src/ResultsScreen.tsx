@@ -30,7 +30,7 @@ export const ResultsScreen: React.FC = () => {
       <div className={`p-3 rounded-lg text-center ${isPerfect ? 'bg-green-50' : 'bg-red-50'}`}>
         <p className="text-xs text-gray-600 mb-1">Accuracy</p>
         <p className={`text-2xl font-bold ${isPerfect ? 'text-green-600' : 'text-red-600'}`}>
-          {accuracy}%
+          {accuracy.toFixed(2)}%
         </p>
       </div>
 

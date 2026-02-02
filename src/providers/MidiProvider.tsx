@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, type ReactNode } from "react";
+import React, { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import {
   detectChordFromNotes,
   midiToNote,
@@ -18,10 +18,10 @@ export const MidiProvider: React.FC<{ children: ReactNode }> = ({
   const onChordListnersRef = useRef<Set<ChordLister>>(new Set());
   const lastChordRef = useRef<Chord | null>(null);
 
-  const subscribeChord = (callback: ChordLister) => {
+  const subscribeChord = useCallback((callback: ChordLister) => {
     onChordListnersRef.current.add(callback);
     return () => onChordListnersRef.current.delete(callback);
-  };
+  }, []);
 
   const handleMIDIMessage = (event: MIDIMessageEvent) => {
     if (!event.data) return;
@@ -42,14 +42,19 @@ export const MidiProvider: React.FC<{ children: ReactNode }> = ({
     setPressedNotes(notesArray.map(midiToNote));
 
     const chord = detectChordFromNotes(notesArray);
-    if (!chord) return;
+    if (!chord) {
+      lastChordRef.current = chord;
+      return;
+    } 
+
     if (
       lastChordRef.current &&
       chord.root === lastChordRef.current.root &&
       chord.type === lastChordRef.current.type
-    )
-      return;
+    ) return;
 
+    lastChordRef.current = chord;
+    
     onChordListnersRef.current.forEach((callback) => callback(chord));
   };
 
