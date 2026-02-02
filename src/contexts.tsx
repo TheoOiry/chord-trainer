@@ -20,7 +20,9 @@ interface MidiContextType {
   subscribeChord: (callback: ChordLister) => () => void;
 }
 
-export const MidiContext = createContext<MidiContextType | undefined>(undefined);
+export const MidiContext = createContext<MidiContextType | undefined>(
+  undefined,
+);
 
 export interface SequenceResults {
   totalTime: number;
@@ -28,13 +30,13 @@ export interface SequenceResults {
 }
 
 interface ChordSequenceContextProps {
-  currentIndex: number,
-  lastSequenceResults: SequenceResults,
-  chordSequence: Chord[],
-  currentChord: Chord,
-  replay: () => void,
+  currentIndex: number;
+  lastSequenceResults: SequenceResults;
+  chordSequence: Chord[];
+  currentChord: Chord;
+  replay: () => void;
 }
 
-export const ChordSequenceContext = createContext<ChordSequenceContextProps | undefined>(
-    undefined
-);
+export const ChordSequenceContext = createContext<
+  ChordSequenceContextProps | undefined
+>(undefined);

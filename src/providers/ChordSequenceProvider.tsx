@@ -6,10 +6,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import {
-  ChordSequenceContext,
-  type SequenceResults,
-} from "../contexts";
+import { ChordSequenceContext, type SequenceResults } from "../contexts";
 import { useMidi } from "../hooks/useMidi";
 import { useChordTypes } from "../hooks/useChordTypes";
 import type { Chord } from "../utils/notes";
@@ -94,11 +91,7 @@ export const ChordSequenceProvider: React.FC<{ children: ReactNode }> = ({
     replay();
   });
 
-  useEffect(() => { 
-    const unsubscribe = subscribeChord(handleChord) 
-
-    return () => unsubscribe();
-  }, [subscribeChord]);
+  useEffect(() => subscribeChord(handleChord), [subscribeChord]);
 
   return (
     <ChordSequenceContext.Provider

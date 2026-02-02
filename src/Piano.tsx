@@ -59,9 +59,12 @@ export const Piano: React.FC = () => {
         >
           <div
             className="w-full h-full border border-gray-200 flex flex-col items-center justify-end pb-1 transition-colors text-[11px] font-medium text-gray-600"
-            style={{ backgroundColor: isWhitePressed ? PRESSED_COLOR : "white" }}
+            style={{
+              backgroundColor: isWhitePressed ? PRESSED_COLOR : "white",
+            }}
           >
-            {note}{octave}
+            {note}
+            {octave}
           </div>
 
           {black && (
@@ -74,7 +77,8 @@ export const Piano: React.FC = () => {
                 backgroundColor: isBlackPressed ? PRESSED_COLOR : "black",
               }}
             >
-              {black}{octave}
+              {black}
+              {octave}
             </div>
           )}
         </div>

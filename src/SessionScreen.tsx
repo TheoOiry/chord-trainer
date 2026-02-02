@@ -30,11 +30,12 @@ export const SessionScreen: React.FC = () => {
               idx < currentIndex
                 ? "bg-gray-100 text-gray-700"
                 : idx === currentIndex
-                ? "bg-gray-900 text-white scale-105"
-                : "bg-white text-gray-700 border border-gray-200"
+                  ? "bg-gray-900 text-white scale-105"
+                  : "bg-white text-gray-700 border border-gray-200"
             }`}
           >
-            {c.root}{c.type}
+            {c.root}
+            {c.type}
           </div>
         ))}
       </div>

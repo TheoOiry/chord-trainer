@@ -1,17 +1,35 @@
-export const CHORD_TYPES = ["major","minor","7","maj7","m7","dim","aug"] as const;
-
-export type ChordType = typeof CHORD_TYPES[number]
-
-export const NOTE_NAMES = [
-  "C", "C#", "D", "D#", "E", "F",
-  "F#", "G", "G#", "A", "A#", "B"
+export const CHORD_TYPES = [
+  "major",
+  "minor",
+  "7",
+  "maj7",
+  "m7",
+  "dim",
+  "aug",
 ] as const;
 
-export type NoteName = typeof NOTE_NAMES[number];
+export type ChordType = (typeof CHORD_TYPES)[number];
+
+export const NOTE_NAMES = [
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+  "A",
+  "A#",
+  "B",
+] as const;
+
+export type NoteName = (typeof NOTE_NAMES)[number];
 
 export interface Note {
-    name: NoteName,
-    octave: number,
+  name: NoteName;
+  octave: number;
 }
 
 export interface Chord {
@@ -29,19 +47,19 @@ export const CHORDS: Record<string, ChordType> = {
   "0,4,8": "aug",
 };
 
-export const ALL_CHORDS: Chord[] = NOTE_NAMES.flatMap(root => {
-  return CHORD_TYPES.map(type => ({ root, type }));
+export const ALL_CHORDS: Chord[] = NOTE_NAMES.flatMap((root) => {
+  return CHORD_TYPES.map((type) => ({ root, type }));
 });
 
 export const midiToNote = (midiNumber: number): Note => {
   const name = NOTE_NAMES[midiNumber % 12];
   const octave = Math.floor(midiNumber / 12) - 1;
   return { name, octave };
-}
+};
 
 export const normalizeNotes = (notes: number[]): number[] => {
-  return [...new Set(notes.map(n => n % 12))].sort((a, b) => a - b);
-}
+  return [...new Set(notes.map((n) => n % 12))].sort((a, b) => a - b);
+};
 
 export const detectChordFromNotes = (notes: number[]): Chord | null => {
   if (notes.length < 3) return null;
@@ -50,7 +68,7 @@ export const detectChordFromNotes = (notes: number[]): Chord | null => {
 
   for (const root of normalized) {
     const intervals = normalized
-      .map(n => (n - root + 12) % 12)
+      .map((n) => (n - root + 12) % 12)
       .sort((a, b) => a - b);
 
     const key = intervals.join(",");
@@ -67,4 +85,4 @@ export const detectChordFromNotes = (notes: number[]): Chord | null => {
   }
 
   return null;
-}
+};

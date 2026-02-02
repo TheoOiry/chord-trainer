@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   detectChordFromNotes,
   midiToNote,
@@ -45,16 +51,17 @@ export const MidiProvider: React.FC<{ children: ReactNode }> = ({
     if (!chord) {
       lastChordRef.current = chord;
       return;
-    } 
+    }
 
     if (
       lastChordRef.current &&
       chord.root === lastChordRef.current.root &&
       chord.type === lastChordRef.current.type
-    ) return;
+    )
+      return;
 
     lastChordRef.current = chord;
-    
+
     onChordListnersRef.current.forEach((callback) => callback(chord));
   };
 
