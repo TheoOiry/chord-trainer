@@ -3,6 +3,7 @@ import { useMidi } from "./hooks/useMidi";
 
 const WHITE_KEYS = ["C", "D", "E", "F", "G", "A", "B"] as const;
 const START_OCTAVE = 3;
+const PRESSED_COLOR = "#3580FF";
 
 const BLACK_KEYS: Record<(typeof WHITE_KEYS)[number], string | null> = {
   C: "C#",
@@ -58,7 +59,7 @@ export const Piano: React.FC = () => {
         >
           <div
             className="w-full h-full border border-gray-200 flex flex-col items-center justify-end pb-1 transition-colors text-[11px] font-medium text-gray-600"
-            style={{ backgroundColor: isWhitePressed ? "#fef08a" : "white" }}
+            style={{ backgroundColor: isWhitePressed ? PRESSED_COLOR : "white" }}
           >
             {note}{octave}
           </div>
@@ -70,7 +71,7 @@ export const Piano: React.FC = () => {
                 width: "65%",
                 height: "70%",
                 left: "67.5%",
-                backgroundColor: isBlackPressed ? "#1f2937" : "black",
+                backgroundColor: isBlackPressed ? PRESSED_COLOR : "black",
               }}
             >
               {black}{octave}
