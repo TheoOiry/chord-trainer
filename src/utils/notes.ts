@@ -61,6 +61,32 @@ export const normalizeNotes = (notes: number[]): number[] => {
   return [...new Set(notes.map((n) => n % 12))].sort((a, b) => a - b);
 };
 
+export const findEquivalentChords = (chord: Chord): Chord[] => {
+  const intervals =
+    Object.entries(CHORDS)
+      .find(([, type]) => type === chord.type)?.[0]
+      ?.split(",")
+      .map(Number) ?? [];
+
+  if (intervals.length === 0) return [];
+
+  const rootIndex = NOTE_NAMES.indexOf(chord.root);
+
+  return NOTE_NAMES.map((name, index) => {
+    const transposition = (index - rootIndex + 12) % 12;
+    const transposedIntervals = intervals
+      .map((interval) => (interval + transposition) % 12)
+      .sort((a, b) => a - b);
+
+    const sameIntervals = Object.entries(CHORDS).some(
+      ([key]) =>
+        key === transposedIntervals.join(",") && CHORDS[key] === chord.type,
+    );
+
+    return sameIntervals ? { root: name, type: chord.type } : null;
+  }).filter((c): c is Chord => c !== null);
+};
+
 export const detectChordFromNotes = (notes: number[]): Chord | null => {
   if (notes.length < 3) return null;
 

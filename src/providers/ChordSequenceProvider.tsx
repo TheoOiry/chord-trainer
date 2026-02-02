@@ -9,7 +9,7 @@ import {
 import { ChordSequenceContext, type SequenceResults } from "../contexts";
 import { useMidi } from "../hooks/useMidi";
 import { useChordTypes } from "../hooks/useChordTypes";
-import type { Chord } from "../utils/notes";
+import { findEquivalentChords, type Chord } from "../utils/notes";
 
 export const CHORDS_PER_SEQUENCE = 15;
 
@@ -65,8 +65,11 @@ export const ChordSequenceProvider: React.FC<{ children: ReactNode }> = ({
   }, [selectedChords]);
 
   const handleChord = useEffectEvent((chord: Chord) => {
-    const isCorrect =
-      chord.root === currentChord.root && chord.type === currentChord.type;
+    const chords = findEquivalentChords(chord);
+    const isCorrect = chords.some(
+      (chord) =>
+        chord.root === currentChord.root && chord.type === currentChord.type,
+    );
 
     if (!startTimeRef.current) {
       startTimeRef.current = Date.now();
