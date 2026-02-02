@@ -40,3 +40,15 @@ interface ChordSequenceContextProps {
 export const ChordSequenceContext = createContext<
   ChordSequenceContextProps | undefined
 >(undefined);
+
+interface SamplerContextProps {
+  isSamplerEnabled: boolean;
+  toggleIsSamplerEnable: () => void;
+
+  playNote: (midiNote: number, velocity: number) => Promise<void>;
+  stopNote: (midiNote: number) => void;
+}
+
+export const SamplerContext = createContext<SamplerContextProps | undefined>(
+  undefined,
+);

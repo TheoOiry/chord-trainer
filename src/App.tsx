@@ -4,6 +4,7 @@ import { Piano } from "./Piano";
 import { ChordTypeSelector } from "./ChordTypeSelector";
 import { useChordSequence } from "./hooks/useChordSequence";
 import { ResultsScreen } from "./ResultsScreen";
+import SamplerSwitch from "./SamplerSwitch";
 
 export default function App() {
   const { isReady } = useMidi();
@@ -20,6 +21,8 @@ export default function App() {
               Connect a MIDI keyboard
             </span>
           )}
+
+          <SamplerSwitch />
 
           <button
             onClick={replay}
