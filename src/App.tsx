@@ -13,7 +13,16 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4">
       <div className="w-full max-w-6xl flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold">Chord Trainer</h1>
+        <div className="flex gap-2 items-center">
+          <h1 className="text-lg font-semibold">Chord Trainer</h1>
+          <a
+            href="https://github.com/TheoOiry/chord-trainer"
+            target="_blank"
+            aria-label="GitHub repository"
+          >
+            <img src="github.svg" className="w-6 h-6" />
+          </a>
+        </div>
 
         <div className="flex items-center gap-3">
           {!isReady && (
