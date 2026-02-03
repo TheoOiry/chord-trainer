@@ -61,54 +61,32 @@ export const normalizeNotes = (notes: number[]): number[] => {
   return [...new Set(notes.map((n) => n % 12))].sort((a, b) => a - b);
 };
 
-export const findEquivalentChords = (chord: Chord): Chord[] => {
-  const intervals =
-    Object.entries(CHORDS)
-      .find(([, type]) => type === chord.type)?.[0]
-      ?.split(",")
-      .map(Number) ?? [];
-
-  if (intervals.length === 0) return [];
-
-  const rootIndex = NOTE_NAMES.indexOf(chord.root);
-
-  return NOTE_NAMES.map((name, index) => {
-    const transposition = (index - rootIndex + 12) % 12;
-    const transposedIntervals = intervals
-      .map((interval) => (interval + transposition) % 12)
-      .sort((a, b) => a - b);
-
-    const sameIntervals = Object.entries(CHORDS).some(
-      ([key]) =>
-        key === transposedIntervals.join(",") && CHORDS[key] === chord.type,
-    );
-
-    return sameIntervals ? { root: name, type: chord.type } : null;
-  }).filter((c): c is Chord => c !== null);
-};
-
-export const detectChordFromNotes = (notes: number[]): Chord | null => {
-  if (notes.length < 3) return null;
+// Some chords can have the same set of notes so 
+// this function will return all possible chord interpretations for the given notes
+export const detectChordsFromNotes = (notes: number[]): Chord[] => {
+  if (notes.length < 3) return [];
 
   const normalized = normalizeNotes(notes);
+  return normalized
+    .map((root) => {
+      const intervals = normalized
+        .map((n) => (n - root + 12) % 12)
+        .sort((a, b) => a - b);
 
-  for (const root of normalized) {
-    const intervals = normalized
-      .map((n) => (n - root + 12) % 12)
-      .sort((a, b) => a - b);
+      const key = intervals.join(",");
 
-    const key = intervals.join(",");
+      return { root, key };
+    })
+    .filter(({ key }) => key in CHORDS)
+    .map(({ root, key }) => ({ root: NOTE_NAMES[root], type: CHORDS[key] }));
+};
 
-    if (CHORDS[key]) {
-      const rootName = NOTE_NAMES[root];
-      const type = CHORDS[key];
+export const chordsEqual = (chords: Chord[], other: Chord[]): boolean => {
+  if (chords.length !== other.length) return false;
 
-      return {
-        root: rootName,
-        type,
-      };
-    }
-  }
-
-  return null;
+  return chords.every((chord) =>
+    other.some(
+      (o) => o.root === chord.root && o.type === chord.type,
+    )
+  );
 };

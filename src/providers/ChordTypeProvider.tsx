@@ -29,6 +29,8 @@ export const ChordTypeProvider: React.FC<{ children: ReactNode }> = ({
   );
 
   const selectChordTypes = useCallback((types: ChordType[]) => {
+    if (types.length === 0) return;
+
     setSelectedChordTypes(types);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(types));
   }, []);

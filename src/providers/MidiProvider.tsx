@@ -6,7 +6,8 @@ import React, {
   type ReactNode,
 } from "react";
 import {
-  detectChordFromNotes,
+  chordsEqual,
+  detectChordsFromNotes,
   midiToNote,
   type Chord,
   type Note,
@@ -23,7 +24,7 @@ export const MidiProvider: React.FC<{ children: ReactNode }> = ({
   const [pressedNotes, setPressedNotes] = useState<Note[]>([]);
 
   const onChordListnersRef = useRef<Set<ChordLister>>(new Set());
-  const lastChordRef = useRef<Chord | null>(null);
+  const lastChordsRef = useRef<Chord[] | null>(null);
 
   const { playNote, stopNote } = useSampler();
 
@@ -53,22 +54,19 @@ export const MidiProvider: React.FC<{ children: ReactNode }> = ({
 
       setPressedNotes(notesArray.map(midiToNote));
 
-      const chord = detectChordFromNotes(notesArray);
-      if (!chord) {
-        lastChordRef.current = chord;
+      const chords = detectChordsFromNotes(notesArray);
+      if (chords.length === 0) {
+        lastChordsRef.current = null;
         return;
       }
 
-      if (
-        lastChordRef.current &&
-        chord.root === lastChordRef.current.root &&
-        chord.type === lastChordRef.current.type
-      )
+      if (lastChordsRef.current && chordsEqual(lastChordsRef.current, chords)) {
         return;
+      }
 
-      lastChordRef.current = chord;
+      lastChordsRef.current = chords;
 
-      onChordListnersRef.current.forEach((callback) => callback(chord));
+      onChordListnersRef.current.forEach((callback) => callback(chords));
     },
     [playNote, stopNote],
   );

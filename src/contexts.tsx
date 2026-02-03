@@ -12,7 +12,7 @@ export const ChordTypeContext = createContext<ChordTypeContextType | undefined>(
   undefined,
 );
 
-export type ChordLister = (chord: Chord) => void;
+export type ChordLister = (chord: Chord[]) => void;
 
 interface MidiContextType {
   isReady: boolean;
